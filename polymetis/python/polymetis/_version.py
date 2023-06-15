@@ -22,12 +22,17 @@ else:
     os.chdir(os.path.dirname(polymetis.__file__))
 
     # Git describe output
-    stream = os.popen("git describe --tags")
-    version_string = [line for line in stream][0]
-
-    # Modify to same format as conda env variable GIT_DESCRIBE_NUMBER
-    version_items = version_string.strip("\n").split("-")
-    __version__ = f"{version_items[-2]}_{version_items[-1]}"
+    try:
+        stream = os.popen("git describe --tags")
+        version_string = [line for line in stream][0]
+        # Modify to same format as conda env variable GIT_DESCRIBE_NUMBER
+        version_items = version_string.strip("\n").split("-")
+        __version__ = f"{version_items[-2]}_{version_items[-1]}"
+    except e:
+        print(e)
+        print("using commit info instead")
+        commit = [f for f in os.popen("git log -1")][0]
+        __version__ = commit.strip("\n").split()[-1]
 
     # Reset cwd
     os.chdir(original_cwd)
