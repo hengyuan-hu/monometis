@@ -48,6 +48,8 @@ def main(cfg):
 
     if cfg.use_real_time:
         log.info(f"Acquiring sudo...")
+        subprocess.run(["sudo", "echo", '"Acquired sudo."'], check=True)
+
         sudo_prefix = ["sudo", "env", "PATH=$PATH", "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"]
         server_cmd = sudo_prefix + server_cmd + ["-r"]
 
