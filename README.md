@@ -1,11 +1,68 @@
-![Polymetis: a real-time PyTorch controller manager](./docs/source/img/polymetis-logo.svg)
+## Install & Compile
 
-## A real-time PyTorch controller manager
+### On NUC
 
-[![CircleCI](https://circleci.com/gh/facebookresearch/fairo/tree/main.svg?style=svg&circle-token=7fadbd3989ab8e76003fd5193ad62e26686bc4a6)](https://circleci.com/gh/facebookresearch/fairo/tree/main)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+1) Create a cpu environment with dependencies.
 
-> **Polymetis**: adj., Ancient Greek. _Clever in many ways._ Applied to Odysseus by Homer in the _Odyssey_.
+2) Build libfranka to communicate with the robot.
+
+3) Build & install polymetis
+
+```bash
+# clone & create env
+git clone git@github.com:hengyuan-hu/monometis.git
+cd monometis/
+mamba env create -f polymetis/environment_cpu.yml
+conda activate robo
+
+# compile stuff
+./scripts/build_libfranka.sh
+mkdir -p ./polymetis/build
+cd ./polymetis/build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_FRANKA=ON
+make -j
+cd ../..
+
+# inside the project root
+pip install -e ./polymetis
+```
+
+To launch the robot server
+```
+# robot
+cd launcher; conda activate robo; ./launch_robot.sh
+
+# gripper
+cd launcher; conda activate robo; ./launch_gripper.sh
+```
+
+### On Workstation
+
+1) Create a **gpu** environment with dependencies. It assumes that cuda11.8 is installed on the machine.
+
+2) Build & install polymetis
+
+```bash
+# clone & create *gpu* env
+git clone git@github.com:hengyuan-hu/monometis.git
+cd monometis/
+mamba env create -f polymetis/environment.yml
+conda activate robo
+
+# compile stuff, no need to build libfranka on this machine
+mkdir -p ./polymetis/build
+cd ./polymetis/build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j
+cd ../..
+
+# inside the project root
+pip install -e ./polymetis
+```
+
+---
+
+## Polymetis: A real-time PyTorch controller manager
 
 **Write [PyTorch](http://pytorch.org/) controllers for robots, test them in simulation, and seamlessly transfer to real-time hardware.**
 
