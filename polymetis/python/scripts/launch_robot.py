@@ -30,7 +30,11 @@ def main(cfg):
     # Check if another server is alive on address
     assert not check_server_exists(
         cfg.ip, cfg.port
-    ), "Port unavailable; possibly another server found on designated address. To prevent undefined behavior, start the service on a different port or kill stale servers with 'pkill -9 run_server'"
+    ), (
+        "Port unavailable; possibly another server found on designated address. "
+        "To prevent undefined behavior, start the service on a different port or "
+        "kill stale servers with 'pkill -9 run_server'"
+    )
 
     # Parse server address
     ip = str(cfg.ip)
@@ -44,13 +48,11 @@ def main(cfg):
 
     if cfg.use_real_time:
         log.info(f"Acquiring sudo...")
-        subprocess.run(["sudo", "echo", '"Acquired sudo."'], check=True)
-        server_cmd = [
-            "sudo", "env", "PATH=$PATH", "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
-        ] + server_cmd + ["-r"]
+        sudo_prefix = ["sudo", "env", "PATH=$PATH", "LD_LIBRARY_PATH=$LD_LIBRARY_PATH"]
+        server_cmd = sudo_prefix + server_cmd + ["-r"]
 
     server_output = subprocess.Popen(
-        server_cmd, stdout=sys.stdout, stderr=sys.stderr, preexec_fn=os.setpgrp, shell=True,
+        server_cmd, stdout=sys.stdout, stderr=sys.stderr, preexec_fn=os.setpgrp
     )
     pgid = os.getpgid(server_output.pid)
 
