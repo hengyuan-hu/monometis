@@ -47,7 +47,6 @@ cd launcher; conda activate robo; ./launch_gripper.sh
 
 1) Create a **gpu** environment with dependencies.
 It assumes that cuda11.8 is installed on the machine.
-
 Modify `polymetis/environment.yml` if a different version is desired.
 The relevant dependencies for pytorch are `pytorch=2.0.1=py3.9_cuda11.8_cudnn8.7.0_0`
 and `pytorch-cuda=11.8`.
